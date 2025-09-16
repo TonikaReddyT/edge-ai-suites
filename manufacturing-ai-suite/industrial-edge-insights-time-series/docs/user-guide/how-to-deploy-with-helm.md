@@ -69,18 +69,18 @@ To install Helm charts, use one of the following options:
 - OPC-UA ingestion flow:
 
     ```bash
-    helm install ts-wind-turbine-anomaly --set env.TELEGRAF_INPUT_PLUGIN=opcua . -n ts-wind-turbine-anomaly-app --create-namespace
+    helm install ts-wind-turbine-anomaly --set env.TELEGRAF_INPUT_PLUGIN=opcua . -n ts-sample-app --create-namespace
     ```
 
 - MQTT ingestion flow:
 
     ```bash
-    helm install ts-wind-turbine-anomaly --set env.TELEGRAF_INPUT_PLUGIN=mqtt_consumer . -n ts-wind-turbine-anomaly-app --create-namespace
+    helm install ts-wind-turbine-anomaly --set env.TELEGRAF_INPUT_PLUGIN=mqtt_consumer . -n ts-sample-app --create-namespace
     ```
 Use the following command to verify if all the application resources got installed w/ their status:
 
 ```bash
-   kubectl get all -n ts-wind-turbine-anomaly-app
+   kubectl get all -n ts-sample-app
 ```
 
 ## Step 4: Copy the windturbine_anomaly_detection udf package for helm deployment to Time Series Analytics Microservice
@@ -107,9 +107,9 @@ To copy your own or existing model into Time Series Analytics Microservice in or
     mkdir windturbine_anomaly_detector
     cp -r models tick_scripts udfs windturbine_anomaly_detector/.
 
-    POD_NAME=$(kubectl get pods -n ts-wind-turbine-anomaly-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
+    POD_NAME=$(kubectl get pods -n ts-sample-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
 
-    kubectl cp windturbine_anomaly_detector $POD_NAME:/tmp/ -n ts-wind-turbine-anomaly-app
+    kubectl cp windturbine_anomaly_detector $POD_NAME:/tmp/ -n ts-sample-app
     ```
    > **Note:**  
    > Run the commands only after performing the Helm install.
@@ -132,8 +132,8 @@ To verify the Wind Turbine Anomaly Detection Results, follow the steps [here](ge
 To uninstall Helm charts:
 
 ```sh
-helm uninstall ts-wind-turbine-anomaly -n ts-wind-turbine-anomaly-app
-kubectl get all -n ts-wind-turbine-anomaly-app # It may take a few minutes for all application resources to be cleaned up.
+helm uninstall ts-wind-turbine-anomaly -n ts-sample-app
+kubectl get all -n ts-sample-app # It may take a few minutes for all application resources to be cleaned up.
 ```
 
 ## Configure Alerts in Time Series Analytics Microservice
@@ -152,7 +152,7 @@ To deploy a custom UDF by uploading it to the Model Registry, follow the steps [
 
 - Check pod details or container logs to diagnose failures:
     ```sh
-    kubectl get pods -n ts-wind-turbine-anomaly-app
-    kubectl describe pod <pod_name> -n ts-wind-turbine-anomaly-app # Shows details of the pod
-    kubectl logs -f <pod_name> -n ts-wind-turbine-anomaly-app # Shows logs of the container in the pod
+    kubectl get pods -n ts-sample-app
+    kubectl describe pod <pod_name> -n ts-sample-app # Shows details of the pod
+    kubectl logs -f <pod_name> -n ts-sample-app # Shows logs of the container in the pod
     ```

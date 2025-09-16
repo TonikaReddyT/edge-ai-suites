@@ -98,8 +98,8 @@ and config.json has been volume mounted for the Time Series Analytics Microservi
 
 4. Verify the logs of the Time Series Analytics Microservice:
     ```sh
-    POD_NAME=$(kubectl get pods -n ts-wind-turbine-anomaly-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
-    kubectl logs -f -n ts-wind-turbine-anomaly-app $POD_NAME
+    POD_NAME=$(kubectl get pods -n ts-sample-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
+    kubectl logs -f -n ts-sample-app $POD_NAME
     ```
 
 ## With Model Registry

@@ -155,18 +155,18 @@ To subscribe to MQTT topics in a Helm deployment, execute the following command:
 - Identify the MQTT broker pod name by running:
 
 ```sh
-kubectl get pods -n ts-wind-turbine-anomaly-app | grep mqtt-broker
+kubectl get pods -n ts-sample-app | grep mqtt-broker
 ```
 
 - Use the pod name from the output of the above command to subscribe to all topics:
 ```sh
-kubectl exec -it -n ts-wind-turbine-anomaly-app <mqtt_broker_pod_name> -- mosquitto_sub -h localhost -v -t '#' -p 1883
+kubectl exec -it -n ts-sample-app <mqtt_broker_pod_name> -- mosquitto_sub -h localhost -v -t '#' -p 1883
 ```
 
 - To subscribe to the `alerts/wind_turbine` topic, use the following command:
 
 ```sh
-kubectl exec -it -n ts-wind-turbine-anomaly-app <mqtt_broker_pod_name> -- mosquitto_sub -h localhost -v -t alerts/wind_turbine -p 1883
+kubectl exec -it -n ts-sample-app <mqtt_broker_pod_name> -- mosquitto_sub -h localhost -v -t alerts/wind_turbine -p 1883
 ```
 
 - **Publish OPC-UA Alerts**
@@ -193,9 +193,9 @@ cd time-series-analytics-config
 mkdir -p windturbine_anomaly_detector
 cp -r models tick_scripts udfs windturbine_anomaly_detector/.
 
-POD_NAME=$(kubectl get pods -n ts-wind-turbine-anomaly-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
+POD_NAME=$(kubectl get pods -n ts-sample-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
 
-kubectl cp windturbine_anomaly_detector $POD_NAME:/tmp/ -n ts-wind-turbine-anomaly-app
+kubectl cp windturbine_anomaly_detector $POD_NAME:/tmp/ -n ts-sample-app
 ```
 
 3. Configuring OPC-UA Alert in config.json

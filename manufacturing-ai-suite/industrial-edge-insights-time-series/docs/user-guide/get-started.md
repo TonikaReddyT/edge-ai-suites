@@ -117,7 +117,7 @@ The `mqtt` section specifies the MQTT broker details for sending alerts.
 
 
 #### **`config/`**:
-   - `kapacitor_devmode.conf` would be updated as per the `config.json` at runtime for usage.
+   - `kapacitor.conf` would be updated as per the `config.json` at runtime for usage.
 
 #### **`udfs/`**:
    - Contains the python script to process the incoming data.
@@ -209,7 +209,7 @@ make status
 
 2. To check the output in Grafana:
 
-    - Use link `http://<host_ip>:3000` to launch Grafana from browser (preferably, chrome browser)
+    - Use link `https://<host_ip>/` to launch Grafana from browser (preferably, chrome browser)
       
       > **Note**: Use link `http://<host_ip>:30001` to launch Grafana from browser (preferably, chrome browser) for the helm deployment
     
