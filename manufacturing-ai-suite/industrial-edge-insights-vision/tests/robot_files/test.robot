@@ -30,7 +30,7 @@ Pdd_Test_case_004
     RETURN         Run Keyword And Return Status    ${status}
 
 Pdd_Test_case_005
-    [Documentation]      PDD - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]      PDD - Validate stopping the app containers using docker compose down -v  : docker-compose based
     ${status}          TC_005_PDD
     Should Not Be Equal As Integers    ${status}    1
     RETURN         Run Keyword And Return Status    ${status}
@@ -60,7 +60,7 @@ Weld_Test_case_004
     RETURN         Run Keyword And Return Status    ${status}
 
 Weld_Test_case_005
-    [Documentation]      WELD - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]      WELD - Validate stopping the app containers using docker compose down -v  : docker-compose based
     ${status}          TC_005_WELD
     Should Not Be Equal As Integers    ${status}    1
     RETURN         Run Keyword And Return Status    ${status}
@@ -90,7 +90,7 @@ Pcb_Test_case_004
     RETURN         Run Keyword And Return Status    ${status}
 
 Pcb_Test_case_005
-    [Documentation]      PCB - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]      PCB - Validate stopping the app containers using docker compose down -v  : docker-compose based
     ${status}          TC_005_PCB
     Should Not Be Equal As Integers    ${status}    1
     RETURN         Run Keyword And Return Status    ${status}
@@ -120,7 +120,7 @@ Wsg_Test_case_004
     RETURN         Run Keyword And Return Status    ${status}
 
 Wsg_Test_case_005
-    [Documentation]      WSG - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]      WSG - Validate stopping the app containers using docker compose down -v  : docker-compose based
     ${status}          TC_005_WSG
     Should Not Be Equal As Integers    ${status}    1
     RETURN         Run Keyword And Return Status    ${status}
@@ -156,7 +156,7 @@ PDD_TC_004
     Should Not Be Equal As Integers    ${Status}    0
 
 PDD_TC_005
-    [Documentation]    PDD - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]    PDD - Validate stopping the app containers using docker compose down -v  : docker-compose based
     [Tags]      app
     ${Status}    Run Keyword And Return Status   Pdd_Test_case_005
     Should Not Be Equal As Integers    ${Status}    0
@@ -186,7 +186,7 @@ WELD_TC_004
     Should Not Be Equal As Integers    ${Status}    0
 
 WELD_TC_005
-    [Documentation]    WELD - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]    WELD - Validate stopping the app containers using docker compose down -v  : docker-compose based
     [Tags]      app
     ${Status}    Run Keyword And Return Status   Weld_Test_case_005
     Should Not Be Equal As Integers    ${Status}    0
@@ -216,7 +216,7 @@ PCB_TC_004
     Should Not Be Equal As Integers    ${Status}    0
 
 PCB_TC_005
-    [Documentation]    PCB - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]    PCB - Validate stopping the app containers using docker compose down -v  : docker-compose based
     [Tags]      app
     ${Status}    Run Keyword And Return Status   Pcb_Test_case_005
     Should Not Be Equal As Integers    ${Status}    0
@@ -246,7 +246,7 @@ WSG_TC_004
     Should Not Be Equal As Integers    ${Status}    0
 
 WSG_TC_005
-    [Documentation]    WSG - Validate stopping the spine app containers using docker compose down -v  : docker-compose based
+    [Documentation]    WSG - Validate stopping the app containers using docker compose down -v  : docker-compose based
     [Tags]      app
     ${Status}    Run Keyword And Return Status   Wsg_Test_case_005
     Should Not Be Equal As Integers    ${Status}    0
