@@ -135,7 +135,7 @@ jobs:
     - name: Trivy Config Scan
       run: |
         cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
-        trivy config . trivy-config.txt
+        trivy config . -o trivy-config.txt
         mv trivy-config.txt ${{ github.workspace }}/reports/Trivy
     - name: Trivy FS Scan
       run: |
