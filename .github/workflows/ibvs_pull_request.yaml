@@ -62,7 +62,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: DBS_Scan_Results
-        path: cd docker-bench-security/dbs_scan_*
+        path: docker-bench-security/dbs_scan_*
     - name: Install Trivy from Aqua Security APT repo
       run: |
         sudo apt-get update
