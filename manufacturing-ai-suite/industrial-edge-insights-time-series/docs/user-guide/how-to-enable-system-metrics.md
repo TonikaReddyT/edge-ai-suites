@@ -8,7 +8,7 @@ a prerequisite.
 To enable the system metrics dashboard showcasing the host and docker containers CPU, memory, network, disk IO usage, run the following command:
 
 ```bash
-cd edge-ai-suites/manufacturing-ai-suite/wind-turbine-anomaly-detection/ # path relative to git clone folder
+cd edge-ai-suites/manufacturing-ai-suite/industrial-edge-insights-time-series/ # path relative to git clone folder
 # Try one of the below options:
 make up_opcua_ingestion INCLUDE=validation
 # OR
@@ -17,7 +17,7 @@ make up_mqtt_ingestion INCLUDE=validation
 
 ##  Viewing System Metrics Dashboard
 
-- Use link `http://<host_ip>:3000` to launch Grafana from browser (preferably, chrome browser)
+- Use link `https://<host_ip>:3000/` to launch Grafana from browser (preferably, chrome browser)
 
 - Login to the Grafana with values set for `VISUALIZER_GRAFANA_USER` and `VISUALIZER_GRAFANA_PASSWORD`
     in `.env` file and select **System Metrics Dashboard**.

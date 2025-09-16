@@ -45,28 +45,11 @@ spec:
         - name: telegraf-entrypoint
           mountPath: /entrypoint.sh
           subPath: entrypoint.sh     
-        {{ if eq .Values.env.SECURE_MODE true}}
-        - name: certs
-          mountPath: /run/secrets/ca_certificate.pem
-          subPath: ca_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/Telegraf_Server_server_certificate.pem
-          subPath: Telegraf_Server_server_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/Telegraf_Server_server_key.pem
-          subPath: Telegraf_Server_server_key.pem
         - name: telegraf-conf-input
           mountPath: /etc/telegraf/Telegraf.conf
           subPath: Telegraf.conf
-        {{- else }}
-        - name: telegraf-dev-conf-input
-          mountPath: /etc/telegraf/Telegraf_devmode.conf
-          subPath: Telegraf_devmode.conf
-        {{ end }}
         
         env:
-        - name: SECURE_MODE
-          value: '{{ .Values.env.SECURE_MODE }}'
         - name: TELEGRAF_INPUT_PLUGIN
           value: '{{ .Values.env.TELEGRAF_INPUT_PLUGIN }}'
         - name: MQTT_BROKER_HOST
@@ -85,18 +68,11 @@ spec:
           value: '{{ .Values.env.LOG_LEVEL }}'
         - name: TELEGRAF_METRIC_BATCH_SIZE
           value: '{{ .Values.env.TELEGRAF_METRIC_BATCH_SIZE }}'
-        
-        {{ if eq .Values.env.SECURE_MODE false}}
-        - name: TS_MS_SERVER_URL
-          value: "http://{{ .Values.config.time_series_analytics_microservice.name }}:{{ .Values.config.time_series_analytics_microservice.kapacitor_port }}"
-        - name: TELEGRAF_CONFIG_PATH
-          value: /etc/telegraf/Telegraf_devmode.conf
-        {{- else }}
         - name: TELEGRAF_CONFIG_PATH
           value: /etc/telegraf/Telegraf.conf
+        
         - name: TS_MS_SERVER_URL
-          value: "https://{{ .Values.config.time_series_analytics_microservice.name }}:{{ .Values.config.time_series_analytics_microservice.kapacitor_port }}"
-        {{ end }}
+          value: "http://{{ .Values.config.time_series_analytics_microservice.name }}:{{ .Values.config.time_series_analytics_microservice.kapacitor_port }}"
         - name: OPCUA_SERVER
           value: "opc.tcp://ia-opcua-server:4840/freeopcua/server/"
       volumes:
@@ -105,21 +81,6 @@ spec:
       - name: telegraf-entrypoint
         configMap:
           name: telegraf-entrypoint
-      - name: telegraf-dev-conf-input
-        configMap:
-          name: telegraf-dev-conf-input
       - name: telegraf-conf-input
         configMap:
           name: telegraf-conf-input
-      {{ if eq .Values.env.SECURE_MODE true}}
-      - name: certs
-        secret:
-          secretName: ts-certs
-          items:
-          - key: ca_certificate.pem
-            path: ca_certificate.pem 
-          - key: Telegraf_Server_server_certificate.pem
-            path: Telegraf_Server_server_certificate.pem
-          - key: Telegraf_Server_server_key.pem
-            path: Telegraf_Server_server_key.pem
-      {{ end }}

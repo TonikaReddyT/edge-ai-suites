@@ -53,55 +53,26 @@ spec:
               - ALL
           seccompProfile:
             type: RuntimeDefault
-        {{ if eq .Values.env.SECURE_MODE true}}
-        command: ["/bin/bash"]
-        args: ["/entrypoint.sh"]
-        {{ end }}
         volumeMounts:
         - name: vol-temp-grafana
           mountPath: /tmp
         - name: vol-grafana-data
           mountPath: /var/lib/grafana
-        
         - name: grafana-dashboard-json
-          mountPath: /etc/grafana/provisioning/dashboards/windturbine_dashboard.json
-          subPath: windturbine_dashboard.json
+          mountPath: /etc/grafana/provisioning/dashboards/dashboard.json
+          subPath: dashboard.json
         - name: grafana-dashboard-yml
           mountPath: /etc/grafana/provisioning/dashboards/dashboards.yml
           subPath: dashboards.yml
-
-        
-        {{ if eq .Values.env.SECURE_MODE false}}
-        - name: grafana-datasource-dev
-          mountPath: /etc/grafana/provisioning/datasources/datasources.yml
-          subPath: datasources.yml
-        {{- else }}
         - name: grafana-datasource
           mountPath: /etc/grafana/provisioning/datasources/datasources.yml
           subPath: datasources.yml
-        - name: certs
-          mountPath: /run/secrets/ca_certificate.pem
-          subPath: ca_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/grafana_Server_server_certificate.pem
-          subPath: grafana_Server_server_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/grafana_Server_server_key.pem
-          subPath: grafana_Server_server_key.pem
-        {{ end }}
         - name: grafana-entrypoint
           mountPath: /entrypoint.sh
           subPath: entrypoint.sh
         env:
-        - name: SECURE_MODE
-          value: '{{ $.Values.env.SECURE_MODE }}'
-        {{ if eq .Values.env.SECURE_MODE true}}
-        - name: GF_SERVER_PROTOCOL
-          value: "https" 
-        {{- else }}
         - name: GF_SERVER_PROTOCOL
           value: "http"
-        {{ end }}
         - name: INFLUXDB_USERNAME
           value: '{{ $.Values.env.INFLUXDB_USERNAME }}'
         - name: INFLUXDB_PASSWORD
@@ -116,12 +87,6 @@ spec:
           value: '{{ $.Values.env.VISUALIZER_GRAFANA_PASSWORD }}'
         - name: GF_PROVISIONING_ENABLE
           value: "true"
-        - name: GF_SERVER_CERT_FILE
-          value: "/run/secrets/grafana_Server_server_certificate.pem"
-        - name: GF_SERVER_CERT_KEY
-          value: "/run/secrets/grafana_Server_server_key.pem"
-        - name: GF_SERVER_CACERT
-          value: "/run/secrets/ca_certificate.pem"
         - name: INFLUXDB_DB
           value: "datain"
         - name: GF_PROVISIONING_DASHBOARDS
@@ -136,9 +101,6 @@ spec:
       - name: grafana-dashboard-json
         configMap:
           name: grafana-dashboard-json
-      - name: grafana-datasource-dev
-        configMap:
-          name: grafana-datasource-dev
       - name: grafana-datasource
         configMap:
           name: grafana-datasource
@@ -148,17 +110,4 @@ spec:
       - name: grafana-dashboard-yml
         configMap:
           name: grafana-dashboard-yml
-     
-      {{ if eq .Values.env.SECURE_MODE true}}
-      - name: certs
-        secret:
-          secretName: ts-certs
-          items:
-          - key: ca_certificate.pem
-            path: ca_certificate.pem 
-          - key: grafana_Server_server_certificate.pem
-            path: grafana_Server_server_certificate.pem
-          - key: grafana_Server_server_key.pem
-            path: grafana_Server_server_key.pem
-      {{ end }}
           
