@@ -209,7 +209,7 @@ make status
 
 2. To check the output in Grafana:
 
-    - Use link `https://<host_ip>/` to launch Grafana from browser (preferably, chrome browser)
+    - Use link `https://<host_ip>:3000/` to launch Grafana from browser (preferably, chrome browser)
       
       > **Note**: Use link `http://<host_ip>:30001` to launch Grafana from browser (preferably, chrome browser) for the helm deployment
     
