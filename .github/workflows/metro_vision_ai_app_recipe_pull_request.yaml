@@ -9,7 +9,7 @@ on:
       
   pull_request:
     paths:
-      - 'metro-ai-suite/**'
+      - 'metro-ai-suite/metro-vision-ai-app-recipe/**'
       
       
   workflow_call:
