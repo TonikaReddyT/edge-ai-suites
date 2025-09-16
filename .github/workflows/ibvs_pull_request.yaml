@@ -29,7 +29,7 @@ jobs:
         path: edge-ai-suites-repo
     - name: Build
       run: |
-        cd edge-ai-suites-repo/metro-ai-suites/image-based-video-search
+        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
         docker compose build 
         docker compose up -d
         docker ps 
@@ -116,7 +116,7 @@ jobs:
         
     - name: Trivy Image Scans
       run: |
-        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search/
+        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
         mkdir -p ${{ github.workspace }}/reports/Trivy
         trivy image intel/feature-matching:v1.0.1  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.html
         trivy image intel/feature-matching:v1.0.1  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.csv
@@ -134,12 +134,12 @@ jobs:
 
     - name: Trivy Config Scan
       run: |
-        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search/
+        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
         trivy config . trivy-config.txt
         mv trivy-config.txt ${{ github.workspace }}/reports/Trivy
     - name: Trivy FS Scan
       run: |
-        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search/
+        cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
         trivy fs . --format template --template "@trivy-html.tpl" -o "trivy-fs-full-report-code-scan.html" 
         trivy fs --list-all-pkgs --format template --template "@csv.tpl" --output trivy-fs-full-report.csv .
         trivy fs --ignore-unfixed . | tee trivy-fs-full-report-ignore-unfixed.txt
@@ -173,7 +173,7 @@ jobs:
         mkdir -p reports
         docker pull ghcr.io/pycqa/bandit/bandit
         echo "### Bandit Scan Results" >> $GITHUB_STEP_SUMMARY
-        docker run --rm -v "${{ github.workspace }}:/src" ghcr.io/pycqa/bandit/bandit -r /src/edge-ai-suites-repo/metro-ai-suite/image-based-video-search -f txt -o /src/reports/bandit-report.txt || true >> $GITHUB_STEP_SUMMARY
+        docker run --rm -v "${{ github.workspace }}:/src" ghcr.io/pycqa/bandit/bandit -r /src/edge-ai-suites-repo/metro-ai-suite/image-based-video-search/ -f txt -o /src/reports/bandit-report.txt || true >> $GITHUB_STEP_SUMMARY
         echo "Please find full report in bandit-report.txt" >> $GITHUB_STEP_SUMMARY 
     - name: Upload Scan Reports
       uses: actions/upload-artifact@v4
