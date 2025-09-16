@@ -100,7 +100,7 @@ jobs:
         shell: bash
         run: |
           pwd
-          cd manufacturing-ai-suite/industrial-edge-insights-vision/
+          cd metro-ai-suite/metro-vision-ai-app-recipe/
           trivy --version
           which trivy
           trivy image --download-db-only
@@ -139,13 +139,11 @@ jobs:
 
       - name: Trivy config scan for helm charts 
         run: |
-          cd edge-ai-suites-repo/metro-ai-suite/metro-vision-ai-app-recipe/
-          sed -i "s/username:*/username: user/g" values.yaml 
-          sed -i "s/password:*/password: password/g" values.yaml
-          trivy config . -o trivy-helm.txt
+          cd metro-ai-suite/metro-vision-ai-app-recipe/
+          trivy config . --format table -s HIGH,CRITICAL -o trivy-helm.txt
           
       - name: Upload Scan artifact to Github
         uses: actions/upload-artifact@v4
         with:
           name: Trivy Report - Config scan for Helm
-          path: edge-ai-suites-repo/metro-ai-suite/metro-vision-ai-app-recipe/trivy-helm.txt
+          path: metro-ai-suite/metro-vision-ai-app-recipe/trivy-helm.txt
