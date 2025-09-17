@@ -204,7 +204,7 @@ make status
     show measurements
     # Run below query to check and output measurement processed
     # by Time Series Analytics microservice
-    select * from wind_turbine_anomaly_data
+    select * from wind-turbine-anomaly-data
     ```
 
 2. To check the output in Grafana:
