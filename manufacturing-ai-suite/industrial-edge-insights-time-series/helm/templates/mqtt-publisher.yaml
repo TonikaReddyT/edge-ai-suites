@@ -39,12 +39,11 @@ spec:
               - ALL
           seccompProfile:
             type: RuntimeDefault
-        command: ["python3", "-u", "publisher.py", "--csv", "/windturbine_data.csv" , "--topic", "wind_turbine_data"]
         env:
+        - name: SAMPLE_APP
+          value: '{{ .Values.env.SAMPLE_APP }}'
         - name: HOST_IP
           value: "ia-mqtt-broker"
-        - name: SECURE_MODE
-          value: '{{ .Values.env.SECURE_MODE }}'
         - name: TS_MS_SERVER
           value: "time-series-analytics-microservice"
         - name: TS_MS_PORT
@@ -52,29 +51,12 @@ spec:
         - name: CONTINUOUS_SIMULATOR_INGESTION
           value: '{{ .Values.env.CONTINUOUS_SIMULATOR_INGESTION }}'
         volumeMounts:
-        {{ if eq .Values.env.SECURE_MODE true }}
-        - name: certs
-          mountPath: /run/secrets/ca_certificate.pem
-          subPath: ca_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/mqtt-publisher_Server_server_certificate.pem
-          subPath: mqtt-publisher_Server_server_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/mqtt-publisher_Server_server_key.pem
-          subPath: mqtt-publisher_Server_server_key.pem
-        {{ end }}
+        - name: ingestor-{{ .Values.env.SAMPLE_APP }}
+          mountPath: /{{ .Values.env.SAMPLE_APP }}.csv
+          subPath: {{ .Values.env.SAMPLE_APP }}.csv
 
       volumes:
-      {{ if eq .Values.env.SECURE_MODE true }}
-      - name: certs
-        secret:
-          secretName: ts-certs
-          items:
-          - key: ca_certificate.pem
-            path: ca_certificate.pem
-          - key: mqtt-publisher_Server_server_certificate.pem
-            path: mqtt-publisher_Server_server_certificate.pem
-          - key: mqtt-publisher_Server_server_key.pem
-            path: mqtt-publisher_Server_server_key.pem
-      {{ end }}
+      - name: ingestor-{{ .Values.env.SAMPLE_APP }}
+        configMap:
+          name: ingestor-{{ .Values.env.SAMPLE_APP }}
 {{ end }}

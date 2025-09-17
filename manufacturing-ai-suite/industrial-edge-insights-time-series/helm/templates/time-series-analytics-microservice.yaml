@@ -42,11 +42,14 @@ spec:
       imagePullSecrets:
       - name: registryauth
       {{- end }}
+      securityContext:
+        supplementalGroups: [109,110,992]  # render group IDs for ubuntu 20.04, 22.04 and 24.04 host OS
       containers:
       - name: ia-time-series-analytics-microservice
         image: {{ .Values.DOCKER_REGISTRY }}{{ .Values.images.time_series_analytics_image }}{{ if .Values.images.image_suffix }}-{{ .Values.images.image_suffix }}{{ end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         securityContext:
+          # privileged: true # Required for /dev/dri access, if using GPU devices
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
           capabilities:
@@ -60,17 +63,12 @@ spec:
         - name: time-series-analytics-microservice-config
           mountPath: /app/config.json
           subPath: config.json
-        {{ if eq .Values.env.SECURE_MODE true}}
-        - name: certs
-          mountPath: /run/secrets/ca_certificate.pem
-          subPath: ca_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/time_series_analytics_microservice_Server_server_certificate.pem
-          subPath: time_series_analytics_microservice_Server_server_certificate.pem
-        - name: certs
-          mountPath: /run/secrets/time_series_analytics_microservice_Server_server_key.pem
-          subPath: time_series_analytics_microservice_Server_server_key.pem
-        {{ end }}
+        - name: dev-dri
+          mountPath: /dev/dri
+          readOnly: true # Reduce risk while preserving access to GPU/NPU devices
+        - name: run-udev
+          mountPath: /run/udev
+          readOnly: true # Reduce risk while preserving access to udev information
 
         env:
         - name: HTTP_PROXY
@@ -81,8 +79,6 @@ spec:
           value: "influxdb,time-series-analytics-microservice,ia-mqtt-broker,ia-opcua-server,localhost,model-registry"
         - name: TIMESERIES_NO_PROXY
           value: '{{ .Values.env.TIMESERIES_NO_PROXY }}'
-        - name: SECURE_MODE
-          value: '{{ .Values.env.SECURE_MODE }}'
         - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
           value: python
         - name: KAPACITOR_INFLUXDB_0_USERNAME
@@ -109,25 +105,19 @@ spec:
           value: "ia-mqtt-broker" 
         - name: MQTT_BROKER_PORT
           value: "1883" 
-        - name: SSL_CERT_FILE
-          value: "/run/secrets/ca_certificate.pem"
         - name: MODEL_REGISTRY_URL
           value: "http://model-registry:8111"
+        - name: SAMPLE_APP
+          value: '{{ .Values.env.SAMPLE_APP }}'
       volumes:
       - name: vol-temp-time-series-analytics-microservice
         emptyDir: {}
       - name: time-series-analytics-microservice-config
         configMap:
           name: time-series-analytics-microservice-config
-      {{ if eq .Values.env.SECURE_MODE true}}
-      - name: certs
-        secret:
-          secretName: ts-certs
-          items:
-          - key: ca_certificate.pem
-            path: ca_certificate.pem 
-          - key: time_series_analytics_microservice_Server_server_certificate.pem
-            path: time_series_analytics_microservice_Server_server_certificate.pem
-          - key: time_series_analytics_microservice_Server_server_key.pem
-            path: time_series_analytics_microservice_Server_server_key.pem
-      {{ end }}
+      - name: dev-dri
+        hostPath:
+          path: /dev/dri
+      - name: run-udev
+        hostPath:
+          path: /run/udev

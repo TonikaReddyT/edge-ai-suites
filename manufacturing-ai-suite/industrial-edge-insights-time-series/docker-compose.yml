@@ -127,6 +127,8 @@ services:
     - "109"
     # render group ID for ubuntu 22.04 host OS
     - "110"
+    # render group ID for ubuntu 24.04 host OS
+    - "992"
     devices:
       # Following devices under /dev filesystem will be needed based on usecase
       # dri - GPU
@@ -166,7 +168,7 @@ services:
     - "vol_temp_grafana:/tmp"
     - vol_grafana_data:/var/lib/grafana
     - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
-    - ./grafana/dashboards/datasources_dev.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    - ./grafana/dashboards/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
     - ./apps/${SAMPLE_APP}/grafana-dashboard/dashboard.json:/etc/grafana/provisioning/dashboards/dashboard.json
     - ./grafana/entrypoint.sh:/entrypoint.sh
     

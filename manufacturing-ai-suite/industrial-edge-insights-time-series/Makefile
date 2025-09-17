@@ -31,7 +31,6 @@ SECURE_MODE='false'
 
 # Define the path to the .env file and scripts
 ENV_FILE = ./.env
-HELM_PACKAGE_SCRIPT = ./package_helm.sh
 
 include $(ENV_FILE)
 export $(shell sed 's/=.*//' $(ENV_FILE))
@@ -196,7 +195,19 @@ push_images: build
 .PHONY: gen_helm_charts
 gen_helm_charts:
 	@echo "Generating Helm packages"
-	$(HELM_PACKAGE_SCRIPT)
+	@echo "Packaging Helm chart for ${SAMPLE_APP}"
+	@cp -f grafana/dashboards/*.yml helm/
+	@cp -f apps/${SAMPLE_APP}/grafana-dashboard/dashboard.json helm/
+	@cp -f influxdb/config/*.conf helm/
+	@cp -f influxdb/init-influxdb.sh helm/
+	@cp -f mqtt-broker/*.conf helm/
+	@cp -f apps/${SAMPLE_APP}/ingestor-data/${SAMPLE_APP}.csv helm/
+	@cp -f apps/${SAMPLE_APP}/telegraf-config/*.conf helm
+	@cp -f grafana/entrypoint.sh helm/grafana_entrypoint.sh
+	@cp -f apps/${SAMPLE_APP}/time-series-analytics-config/config.json helm/
+	@cp -f telegraf/entrypoint.sh helm/telegraf_entrypoint.sh
+	@sed -i "s/name: .*/name: ${SAMPLE_APP}-sample-app/" "helm/Chart.yaml"
+	@sed -i "s/SAMPLE_APP: .*/SAMPLE_APP: ${SAMPLE_APP}/" "helm/values.yaml"
 	@echo "Helm packages generated"
 
 # Help
