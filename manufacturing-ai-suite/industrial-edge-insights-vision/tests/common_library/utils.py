@@ -213,7 +213,6 @@ class utils:
             if "[]" not in status_output:
                 raise Exception("Pipelines are already running")
             print("✅ No pipelines are currently running - ready to start new pipeline")
-            time.sleep(2)
             pipeline_name = value.get("pipeline")
             if pipeline_name:
                 output = subprocess.check_output(f"./sample_start.sh -p {pipeline_name}", shell=True, executable='/bin/bash')
@@ -234,8 +233,7 @@ class utils:
                     print("✅ Pipeline started successfully, and response string is valid.")
                     return response_id
         except Exception as e:
-            print(f"❌ Error in start_pipeline_and_check: {e}")
-            raise Exception
+            raise Exception(f"❌ Error in start_pipeline_and_check: {e}")
     
 
     def get_pipeline_status(self, value):
