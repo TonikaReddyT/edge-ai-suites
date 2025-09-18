@@ -30,7 +30,7 @@ jobs:
     - name: Build
       run: |
         cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
-        docker compose build 
+        docker compose build --pull --no-cache
         docker compose up -d
         docker ps 
     - name: Checkout docker/docker-bench-security (master)
