@@ -1,4 +1,0 @@
-.. toctree::
-
-   user-guide/index
-
