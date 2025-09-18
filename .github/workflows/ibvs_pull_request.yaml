@@ -118,17 +118,17 @@ jobs:
       run: |
         cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
         mkdir -p ${{ github.workspace }}/reports/Trivy
-        VERSION=$(grep "feature-matching:" compose.yml | awk -F: '{print $3}' | sed 's/^v//')
-        trivy image intel/feature-matching:$VERSION  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.html
-        trivy image intel/feature-matching:$VERSION  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.csv
+        VERSION=$(grep "feature-matching:" compose.yml | awk -F: '{print $3}'| tr -d '[:space:]')
+        trivy image intel/feature-matching:$VERSION  -s HIGH,CRITICAL --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.html
+        trivy image intel/feature-matching:$VERSION  -s HIGH,CRITICAL --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.csv
         trivy image --quiet --format spdx-json --output trivy-image-scan-feature-matching.spdx.json intel/feature-matching:$VERSION 
 
-        trivy image intel/streaming-pipeline:$VERSION  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.html
-        trivy image intel/streaming-pipeline:$VERSION  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.csv
+        trivy image intel/streaming-pipeline:$VERSION  -s HIGH,CRITICAL --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.html
+        trivy image intel/streaming-pipeline:$VERSION  -s HIGH,CRITICAL --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.csv
         trivy image --quiet --format spdx-json --output trivy-image-scan-streaming-pipeline.spdx.json intel/streaming-pipeline:$VERSION 
 
-        trivy image intel/image-based-video-search:$VERSION  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.html
-        trivy image intel/image-based-video-search:$VERSION  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.csv
+        trivy image intel/image-based-video-search:$VERSION  -s HIGH,CRITICAL --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.html
+        trivy image intel/image-based-video-search:$VERSION  -s HIGH,CRITICAL --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.csv
         trivy image --quiet --format spdx-json --output trivy-image-scan-image-based-video-search.spdx.json intel/image-based-video-search:$VERSION
 
         mv trivy-image* ${{ github.workspace }}/reports/Trivy
@@ -136,14 +136,14 @@ jobs:
     - name: Trivy Config Scan
       run: |
         cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
-        trivy config . -o trivy-config.txt
+        trivy config . -s HIGH,CRITICAL -o trivy-config.txt
         mv trivy-config.txt ${{ github.workspace }}/reports/Trivy
     - name: Trivy FS Scan
       run: |
         cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
-        trivy fs . --format template --template "@trivy-html.tpl" -o "trivy-fs-full-report-code-scan.html" 
+        trivy fs .  --format template --template "@trivy-html.tpl" -o "trivy-fs-full-report-code-scan.html" 
         trivy fs --list-all-pkgs --format template --template "@csv.tpl" --output trivy-fs-full-report.csv .
-        trivy fs --ignore-unfixed . | tee trivy-fs-full-report-ignore-unfixed.txt
+        trivy fs -s HIGH,CRITICAL --ignore-unfixed . | tee trivy-fs-full-report-ignore-unfixed.txt
         mv trivy-fs* ${{ github.workspace }}/reports/Trivy
     - name: Upload Trivy Scan Reports
       uses: actions/upload-artifact@v4
