@@ -1,8 +1,8 @@
 # Get Started Guide
-Get started guide for running on bare metal.
+This section explains how to run Sensor Fusion for Traffic Management on Bare Metal systems.
 
-## Overview
-### Prerequisites
+## Prerequisites
+
 - Operating System: [Ubuntu 22.04.1 Desktop LTS](https://old-releases.ubuntu.com/releases/22.04.1/ubuntu-22.04.1-desktop-amd64.iso) (fresh installation) on target system
 - Platform
   - Intel® Celeron® Processor 7305E (1C+1R/2C+1R usecase)
@@ -17,7 +17,7 @@ Get started guide for running on bare metal.
   
   - A processed data snippet is provided in [demo](../../ai_inference/test/demo/raddet_bin_files)
   
-  - If you want to generate the data independently, please refer to this guide: [how_to_get_RADDet_datasets.md](How-To-Get-RADDET-Dataset.md)
+  - If you want to generate the data independently, refer to this guide: [how_to_get_RADDet_datasets.md](How-To-Get-RADDET-Dataset.md)
   
       Upon success, bin files will be extracted, save to $RADDET_DATASET_ROOT/bin_files_{VERSION}:
   
@@ -34,14 +34,14 @@ Get started guide for running on bare metal.
   # https_proxy=<Your-Proxy>
   ```
 
-### Modules
+## Modules
 - AI Inference Service:
   - Media Processing (Camera)
   - Radar Processing (mmWave Radar)
   - Sensor Fusion
 - Demo Application
 
-#### AI Inference Service
+### AI Inference Service
 
 AI Inference Service expose both RESTful API or gRPC API to clients, so as pipelines defined by clients could be requested to run within service.
 
@@ -59,23 +59,23 @@ gRPCPort=50052
 - gRPC API: listen on port 50052
 
 > NOTE: 
-> - For more details about API description, please refer to file to [APIs Section](./APIs.md)
+> - For more details about API description, refer [APIs Section](./APIs.md)
 >
-> - For how to run tests through RESTful API and gRPC API, please refer to [section 4. Run Sensor Fusion Application](#4-run-sensor-fusion-application)
+> - For how to run tests through RESTful API and gRPC API, refer to [section 4. Run Sensor Fusion Application](#4-run-sensor-fusion-application)
 
-#### Demo Application
-The media processing and sensor fusion results will be displayed. Here's an example for reference:
+### Demo Application
+The media processing and sensor fusion results is displayed. Here's an example for reference:
 
 ![1C1R-Display-type-media-fusion](./_images/1C1R-Display-type-media-fusion.png)
 <center>Figure 1. 1C+1R Demo running on Intel® Celeron® Processor 7305E  </center>
 
-For more details about the display mode, please refer to [section 4.3 Run Entry Program](#43-run-entry-program)
+For more details about the display mode, refer to [section 4.3 Run Entry Program](#43-run-entry-program)
 
 
 
 ##	System Requirements
 
-### Hardware requirements
+** Hardware requirements**
 
 - Platform
 
@@ -91,7 +91,7 @@ For more details about the display mode, please refer to [section 4.3 Run Entry 
         | Setting                                          | Step                                                         |
         | ------------------------------------------------ | ------------------------------------------------------------ |
         | Enable the Hidden BIOS Setting in Seavo Platform | "Right Shift+F7" Then Change Enabled Debug Setup Menu from [Enabled] to [Disable] |
-        | Disable VT-d in BIOS                             | Intel Advanced Menu → System Agent (SA) Configuration → VT-d setup menu → VT-d<Disabled>    <br>Note: If VT-d can’t be disabled, please disable Intel Advanced Menu → CPU Configuration → X2APIC |
+        | Disable VT-d in BIOS                             | Intel Advanced Menu → System Agent (SA) Configuration → VT-d setup menu → VT-d<Disabled>    <br>Note: If VT-d can’t be disabled, disable Intel Advanced Menu → CPU Configuration → X2APIC |
         | Disable SAGV in BIOS                             | Intel Advanced Menu → [System Agent (SA) Configuration]  →  Memory configuration →  SAGV <Disabled> |
         | Enable NPU Device                                | Intel Advanced Menu → CPU Configuration → Active SOC-North Efficient-cores <ALL>   <br>Intel Advanced Menu → System Agent (SA) Configuration → NPU Device <Enabled> |
         | TDP Configuration                                | SOC TDP configuration is very important for performance. Suggestion: TDP = 45W. For extreme heavy workload, TDP = 64W <br>---TDP = 45W settings: Intel Advanced → Power & Performance → CPU - Power Management Control → Config TDP Configurations → Power Limit 1 <45000> <br>---TDP = 64W settings: Intel Advanced → Power & Performance → CPU - Power Management Control → Config TDP Configurations →  Configurable TDP Boot Mode [Level2] |
@@ -104,7 +104,7 @@ For more details about the display mode, please refer to [section 4.3 Run Entry 
 
 
 
-### Software requirements
+**Software requirements**
 
 | Software           | Version                |
 | ------------------ | ---------------------- |
@@ -166,7 +166,7 @@ For more details about the display mode, please refer to [section 4.3 Run Entry 
 
 
 
-## How it works
+## Run Metro AI Suite Sensor Fusion for Traffic Management Application
 
 In this section, we describe how to run Metro AI Suite Sensor Fusion for Traffic Management application.
 
@@ -176,7 +176,7 @@ There are two steps required for running the sensor fusion application:
 - Start AI Inference service, more details can be found at [section 4.2 Start Service](#42-start-service)
 - Run the application entry program, more details can be found at [section 4.3 Run Entry Program](#43-run-entry-program)
 
-Besides, users can test each component (without display) following the guides at [Advanced-User-Guide.md](./Advanced-User-Guide.md#532-1c+1r-unit-tests)
+Besides, you can test each component (without display) following the guides at [Advanced-User-Guide.md](./Advanced-User-Guide.md#532-1c+1r-unit-tests)
 
 ### Resources Summary
 - Local File Pipeline for Media pipeline
@@ -503,7 +503,7 @@ Some of the code is referenced from the following projects:
 
     <center>Figure 1: Workload constraints error</center>
 
-    This is because the maxConcurrentWorkload limitation in `AiInference.config` file. If the workloads hit the maximum, task will be canceled due to workload constrains. To solve this problem, you can kill the service with the commands below, and re-execute the command.
+    This is because the maxConcurrentWorkload limitation in `AiInference.config` file. If the workloads hit the maximum, task will be canceled due to workload constrains. To solve this problem, you can kill the service with the following commands, and re-execute the command.
 
     ```bash
     sudo pkill Hce
@@ -555,12 +555,5 @@ Some of the code is referenced from the following projects:
     The solution is either enable iGPU in BIOS, or change config `Device=(STRING)GPU.1` to `Device=(STRING)GPU` in pipeline config file `ai_inference/test/configs/raddet/16C4R/localFusionPipeline.json`.
 
 
-## Release Notes
 
-Current Version: 2.0
-- Support 2C+1R pipeline
-- Support 16C+4R pipeline
-- Support YOLOv6 model
-- Updated OpenVINO to 2024.6
-- Updated oneMKL to 2025.1.0
 

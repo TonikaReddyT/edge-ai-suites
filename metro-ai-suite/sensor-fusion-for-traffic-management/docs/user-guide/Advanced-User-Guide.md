@@ -1,7 +1,5 @@
 # Advanced User Guide
 
-## Overview
-
 This document introduces an Intel® software reference implementation (SW RI) for Metro AI Suite Sensor Fusion in Traffic Management. It combines camera and mmWave radar data—referred to as ISF "C+R" or AIO "C+R"—and runs on the NEPRA base platform.
 
 The internal project code name is **Garnet Park**.
@@ -34,7 +32,7 @@ All these tasks run on single Intel SoC processor which provides all the require
 
 <center> Figure 1. E2E SW pipelines of 4 use cases of sensor fusion C+R(Camera+Radar).</center>
 
-### Prerequisites
+## Prerequisites
 
 - Operating System: [Ubuntu 22.04.1 Desktop LTS](https://old-releases.ubuntu.com/releases/22.04.1/ubuntu-22.04.1-desktop-amd64.iso) (fresh installation) on target system
 
@@ -117,16 +115,16 @@ Currently we support four display types: media, radar, media_radar, media_fusion
 
 
 
-##	System Requirements
+##	Hardware and Software Requirements
 
-### Hardware requirements
+**Hardware requirements**
 
 - Platform
 
     - Intel® Celeron® Processor 7305E (1C+1R/2C+1R usecase)
     - Intel® Core™ Ultra 7 Processor 165H (4C+4R usecase)
 
-    - Intel® Core™ i7-13700 and Intel® Arc™ A770 Graphics (16C+4R usecase)
+    - Intel® Core™ i7-13700 and Intel® Arc™ A770 Graphics (16C+4R use case)
 
 - BIOS setting
 
@@ -148,7 +146,7 @@ Currently we support four display types: media, radar, media_radar, media_fusion
 
 
 
-### Software requirements
+**Software requirements**
 
 | Software           | Version                |
 | ------------------ | ---------------------- |
@@ -208,7 +206,7 @@ Currently we support four display types: media, radar, media_radar, media_fusion
     bash -x build.sh
     ```
 
-## How it works
+## Architecture Overview
 
 In this section, we describe how to run Intel® Metro AI Suite Sensor Fusion for Traffic Management application.
 
@@ -218,10 +216,10 @@ There are two steps required for running the sensor fusion application:
 - Start AI Inference service, more details can be found at [sec 4.2 Start Service](#42-start-service)
 - Run the application entry program, more details can be found at [sec 4.3 Run Entry Program](#43-run-entry-program)
 
-Besides, users can test each component (without display) following the guides at [sec 4.3.2 1C1R Unit Tests](#432-1c+1r-unit-tests), [sec 4.3.4 4C4R Unit Tests](#434-4c+4r-unit-tests), [sec 4.3.6 2C1R Unit Tests](#436-2c+1r-unit-tests), [sec 4.3.8 16C4R Unit Tests](#438-16c+4r-unit-tests)
+Besides, you can test each component (without display) following the guides at [sec 4.3.2 1C1R Unit Tests](#432-1c+1r-unit-tests), [sec 4.3.4 4C4R Unit Tests](#434-4c+4r-unit-tests), [sec 4.3.6 2C1R Unit Tests](#436-2c+1r-unit-tests), [sec 4.3.8 16C4R Unit Tests](#438-16c+4r-unit-tests)
 
 
-### Resources Summary
+### Resources 
 - Local File Pipeline for Media pipeline
   - Json File: localMediaPipeline.json
     `File location: ai_inference/test/configs/raddet/1C1R/localMediaPipeline.json`
@@ -307,7 +305,8 @@ Besides, users can test each component (without display) following the guides at
                |              -> radarOfflineResults ->                           |                                    |
         ```
 
-### Start Service
+### Service Start
+
 Open a terminal, run the following commands:
 
 ```bash
@@ -341,7 +340,8 @@ sudo pkill Hce
 ```
 
 
-### Run Entry Program
+### Entry Program
+
 #### 1C+1R
 
 **The target platform is Intel® Celeron® Processor 7305E.**
@@ -1149,7 +1149,7 @@ docker cp /path/to/dataset docker-tfcc-1:/path/to/dataset
 
 Enter the project directory `/home/openvino/metro-2.0` then run `bash -x build.sh` to build the project. Then following the guides [sec 4. How it works](#4-how-it-works) to run sensor fusion application.
 
-## Code Reference
+## Code References
 
 Some of the code is referenced from the following projects:
 - [IGT GPU Tools](https://gitlab.freedesktop.org/drm/igt-gpu-tools) (MIT License)
