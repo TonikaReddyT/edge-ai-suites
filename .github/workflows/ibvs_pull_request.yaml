@@ -17,7 +17,7 @@ permissions: {}
 
 jobs:
   Build-DBS-Trivy:
-    name: Build IBVS App
+    name: Build IBVS App and run scans DBS, trivy image fs config
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -118,17 +118,18 @@ jobs:
       run: |
         cd edge-ai-suites-repo/metro-ai-suite/image-based-video-search
         mkdir -p ${{ github.workspace }}/reports/Trivy
-        trivy image intel/feature-matching:v1.0.1  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.html
-        trivy image intel/feature-matching:v1.0.1  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.csv
-        trivy image --quiet --format spdx-json --output trivy-image-scan-feature-matching.spdx.json intel/feature-matching:v1.0.1 
+        VERSION=$(grep "feature-matching:" compose.yml | awk -F: '{print $3}' | sed 's/^v//')
+        trivy image intel/feature-matching:$VERSION  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.html
+        trivy image intel/feature-matching:$VERSION  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-feature-matching-ignore-unfixed.csv
+        trivy image --quiet --format spdx-json --output trivy-image-scan-feature-matching.spdx.json intel/feature-matching:$VERSION 
 
-        trivy image intel/streaming-pipeline:v1.0.1  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.html
-        trivy image intel/streaming-pipeline:v1.0.1  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.csv
-        trivy image --quiet --format spdx-json --output trivy-image-scan-streaming-pipeline.spdx.json intel/streaming-pipeline:v1.0.1 
+        trivy image intel/streaming-pipeline:$VERSION  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.html
+        trivy image intel/streaming-pipeline:$VERSION  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-streaming-pipeline-ignore-unfixed.csv
+        trivy image --quiet --format spdx-json --output trivy-image-scan-streaming-pipeline.spdx.json intel/streaming-pipeline:$VERSION 
 
-        trivy image intel/image-based-video-search:v1.0.1  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.html
-        trivy image intel/image-based-video-search:v1.0.1  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.csv
-        trivy image --quiet --format spdx-json --output trivy-image-scan-image-based-video-search.spdx.json intel/image-based-video-search:v1.0.1
+        trivy image intel/image-based-video-search:$VERSION  --ignore-unfixed --format template --template "@trivy-html.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.html
+        trivy image intel/image-based-video-search:$VERSION  --ignore-unfixed --format template --template "@csv.tpl" -o trivy-image-scan-image-based-video-search-ignore-unfixed.csv
+        trivy image --quiet --format spdx-json --output trivy-image-scan-image-based-video-search.spdx.json intel/image-based-video-search:$VERSION
 
         mv trivy-image* ${{ github.workspace }}/reports/Trivy
 
