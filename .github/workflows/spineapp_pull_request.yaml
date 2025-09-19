@@ -153,7 +153,7 @@ jobs:
   sanity:
     uses: ./.github/workflows/spineapp_sanity.yaml
     with:
-      branch: ${{ github.ref_name }}
+      branch:  ${{ github.head_ref }}
     secrets: inherit            
     permissions:
       contents: read           
