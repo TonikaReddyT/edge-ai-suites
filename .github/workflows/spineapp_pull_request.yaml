@@ -151,8 +151,8 @@ jobs:
           path: manufacturing-ai-suite/industrial-edge-insights-vision/helm/trivy-Spineapp-helm.txt
        
   sanity:
-  uses: ./.github/workflows/spineapp_sanity.yaml
-  with:
-    branch: ${{ github.ref_name }}
+    uses: ./.github/workflows/spineapp_sanity.yaml
+    with:
+      branch: ${{ github.ref_name }}
   
 
