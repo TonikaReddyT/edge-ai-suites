@@ -59,7 +59,10 @@ jobs:
        sudo pip install robotframework
        sudo apt install -y python3-nose libxml2-utils vlc
        cd edge-ai-suites-repo/manufacturing-ai-suite/industrial-edge-insights-vision/tests/robot_files
-       robot test.robot || true 
+       robot test.robot || true  &
+       sleep 480
+       docker logs dlstreamer-pipeline-server >> dlsps_logs.txt &
+       wait
        mkdir -p /tmp/test_results
        cp -r report.html log.html output.xml dlsps_logs.txt /tmp/test_results/
        passed=$(xmllint --xpath "//return/status[@status='PASS']" ./output.xml | wc -l) || true

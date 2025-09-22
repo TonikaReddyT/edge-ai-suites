@@ -131,15 +131,7 @@ class utils:
             pipelines_section = output.split("Loaded pipelines:")[1].strip()
             if not pipelines_section:
                 raise Exception("Loaded pipelines list is empty")
-            # Dumping DLSPS logs
-            print("\n**********dumping DLSPS logs*************\n")
-            with open("dlsps_logs.txt", "wb") as f:
-                subprocess.run(
-                    ["docker", "logs", "dlstreamer-pipeline-server"],
-                    stdout=f,
-                    stderr=subprocess.STDOUT,
-                    check=False
-                )
+            
             # Parse loaded pipeline versions
             json_start, json_end = pipelines_section.find('['), pipelines_section.rfind(']') + 1
             if json_start != -1 and json_end != 0:
