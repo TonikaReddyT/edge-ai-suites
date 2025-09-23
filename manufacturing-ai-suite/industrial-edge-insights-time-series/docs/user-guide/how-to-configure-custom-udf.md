@@ -84,7 +84,8 @@ and config.json has been volume mounted for the Time Series Analytics Microservi
       },
       "udfs": {
           "name": "<custom_UDF>",
-          "models": "<custom_UDF>.pkl"
+          "models": "<custom_UDF>.pkl",
+          "device"": "cpu|gpu"
       },
       "alerts": {
           "mqtt": {
@@ -167,7 +168,8 @@ to the Model Registry microservice.
         },
         "udfs": {
             "name": "windturbine_anomaly_detector",
-            "models": "windturbine_anomaly_detector.pkl"
+            "models": "windturbine_anomaly_detector.pkl",
+            "device": "cpu"
         },
         "alerts": {
             "mqtt": {
