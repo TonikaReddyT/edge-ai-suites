@@ -115,6 +115,8 @@ services:
     depends_on:
       - dlstreamer-pipeline-server
       - mediamtx
+      - prometheus
+      - mraas-minio
     environment:
       - http_proxy=${http_proxy}
       - https_proxy=${https_proxy}
@@ -199,6 +201,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges
+    ports:
+      - '8000:8000'
     environment:
       AppName: "ModelRegistry"
       MINIO_ACCESS_KEY: ${MR_MINIO_ACCESS_KEY}
@@ -215,6 +219,12 @@ services:
       - NO_PROXY=$no_proxy,otel-collector,localhost,127.0.0.1
     volumes:
       - ./apps/${SAMPLE_APP}/configs/open_telemetry/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command: >
+      --config.file=/etc/prometheus/prometheus.yml
+      --storage.tsdb.path=/prometheus
+      --web.route-prefix=/prometheus
+      --web.external-url=https://${HOST_IP}/prometheus
     networks:
       - mraas
 
@@ -244,4 +254,6 @@ volumes:
   vol_minio_data:
     driver: local
   mr_postgres_data:
+    driver: local
+  prometheus_data:
     driver: local
