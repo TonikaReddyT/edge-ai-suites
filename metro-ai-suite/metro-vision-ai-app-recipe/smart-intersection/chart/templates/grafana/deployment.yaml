@@ -14,11 +14,13 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}-grafana
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/app-secrets.yaml") . | sha256sum }}
     spec:
       containers:
         - name: grafana
           image: "{{ .Values.grafana.repository }}:{{ .Values.grafana.tag }}"
-          imagePullPolicy: {{ .Values.grafana.pullPolicy }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: http_proxy
               value: {{ .Values.http_proxy | quote }}
@@ -39,14 +41,7 @@ spec:
           command: ["/bin/bash", "-e", "-x", "-c"]
           args:
           - >
-            mkdir -p /var/lib/grafana/dashboards &&
-            cp /custom/anthem-intersection.json /var/lib/grafana/dashboards/anthem-intersection.json &&
-            mkdir -p /etc/grafana/provisioning/dashboards &&
-            cp /custom/dashboards.yml /etc/grafana/provisioning/dashboards/main.yml &&
-            mkdir -p /etc/grafana/provisioning/datasources &&
-            cp /custom/datasources.yml /etc/grafana/provisioning/datasources/datasources.yml &&
-            sed -i "s/<influx-api-token>/$(cat /custom/secrets/influxdb2-admin-token)/g" /etc/grafana/provisioning/datasources/datasources.yml &&
-            /run.sh
+            {{- tpl (include "grafana.startup-script" .) . | nindent 12 }}
           securityContext:
             runAsUser: 0
             runAsGroup: 0
@@ -58,5 +53,10 @@ spec:
           configMap:
             name: {{ .Release.Name }}-grafana-config
         - name: grafana-secrets
-          secret:
-            secretName: {{ .Release.Name }}-grafana-secrets
+          projected:
+            sources:
+            - secret:
+                name: {{ .Release.Name }}-influxdb-secrets
+                items:
+                - key: influxdb2-admin-token
+                  path: influxdb2-admin-token

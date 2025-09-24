@@ -6,7 +6,7 @@ Control
 
 .. _High Level Design:
 
-.. image:: /images/html/RVCControl.png
+.. image:: images/html/RVCControl.png
    :alt: High Level Design
 
 The above :ref:`High Level Design <High Level Design>` diagram shows in communication between 
@@ -31,7 +31,6 @@ tasks.
 
 .. toctree::
    :maxdepth: 1
-   :hidden:
 
    rvc_control/parameters
    rvc_control/motion_controller_plugin

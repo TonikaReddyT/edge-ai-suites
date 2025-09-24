@@ -23,18 +23,28 @@ By following this guide, you will learn how to:
 
 ## Set up and First Use
 
-1. **Clone the Repository and Build Containers**:
+1. **Clone the Repository and update `.env` file**:
     - Create and navigate to directory:
       ```bash
         git clone https://github.com/open-edge-platform/edge-ai-suites.git
         cd edge-ai-suites/metro-ai-suite/image-based-video-search
-        docker compose build
       ```
+    
+    > Note: The below step is required for deployment with certain pre-release images
+    - Update `DOCKER_REGISTRY` variable in `.env` file present at `edge-ai-suites/metro-ai-suite/image-based-video-search/`. The recommended setting to use pre-release images is: `DOCKER_REGISTRY=docker.io/`
+      Please remember to include `/` at the end.
 <!--
 a pre-step to prepare models may be needed
 -->
 
-2. **Download the Models**:
+2. **Build from Source (Optional)**:
+    - Run the below command to build the images from source
+      ```bash
+        docker compose build
+      ```
+    > Note: You can skip this optional step since `docker compose up -d` that is run later in this document automatically pulls the required images.
+
+3. **Download the Models**:
     - Download the models
       <details open>
       <summary>
@@ -104,11 +114,6 @@ a pre-step to prepare models may be needed
             ```
 
       </details>
-
-3. **Update DOCKER_REGISTRY variable in `.env` file**
-   **Note: This step is required to deploy with certain pre-release images**
-   - The recommended setting to use pre-release images is: `DOCKER_REGISTRY=docker.io/`
-     Please remember to include `/` at the end.
 
 4. **Start the Application**:
     - Go back to the folder of compose.yml and run the application using Docker Compose:
@@ -207,7 +212,7 @@ a pre-step to prepare models may be needed
 
     - To use your own models instead of the default models, follow these steps:
 
-      - Open the `config.json` file.
+      - Open the `config.cpu.json` file present at the path `edge-ai-suites/metro-ai-suite/image-based-video-search/src/dlstreamer-pipeline-server/configs/filter-pipeline/`.
 
       - Change the paths in the `pipeline` section to point to your own models. Replace the paths for `gvadetect` and `gvaclassify` with the paths to your models:
         ```json

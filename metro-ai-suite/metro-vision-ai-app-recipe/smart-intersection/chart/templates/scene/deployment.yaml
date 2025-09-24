@@ -14,10 +14,13 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}-scene
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/app-secrets.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: wait-for-db-ready
-        image: curlimages/curl
+        image: "{{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
           - name: http_proxy
             value: {{ .Values.http_proxy | quote }}
@@ -29,12 +32,7 @@ spec:
           - sh
           - -c
           - |
-            echo "Waiting for DB via smart-intersection-web...";
-            until curl --insecure -s https://smart-intersection-web/api/v1/database-ready | grep 'true'; do
-              echo "Database not ready yet...";
-              sleep 5;
-            done;
-            echo "Database is ready!"
+            {{- tpl (include "scene.wait-for-db-script" .) . | nindent 12 }}
       # initContainers:
       # - name: init-scene-secrets
       #   image: busybox
@@ -67,16 +65,7 @@ spec:
         command: ["/bin/bash", "-e", "-c"]
         args:
         - >
-          echo $SMART_INTERSECTION_BROKER_SERVICE_HOST    broker.scenescape.intel.com >> /etc/hosts &&
-          echo $SMART_INTERSECTION_WEB_SERVICE_HOST    web.scenescape.intel.com >> /etc/hosts &&
-          mkdir -p /tmp/secrets/django &&
-          cp /tmp/secrets_/secrets.py /tmp/secrets/django/secrets.py &&
-          cp /tmp/secrets_/scenescape-ca.pem /tmp/secrets/scenescape-ca.pem &&
-          cp /tmp/secrets_/controller.auth /tmp/secrets/controller.auth &&
-          sed -i 's+RUNSECRETS=/run/secrets+RUNSECRETS=/tmp/secrets+g' /usr/local/bin/controller-init &&
-          sed -i '/touch \/tmp\/healthy/d' /usr/local/bin/controller-init &&
-          sed -i 's|--brokerauth ${BROKERAUTH}|--brokerauth ${BROKERAUTH} --rootcert ${BROKERROOTCERT}|g' /usr/local/bin/controller-init &&
-          /usr/local/bin/controller-init controller --broker broker.scenescape.intel.com --brokerrootcert /tmp/secrets/scenescape-ca.pem --ntp ntpserv
+          {{- tpl (include "scene.startup-script" .) . | nindent 10 }}
         volumeMounts:
         - name: pgserver-media
           mountPath: /home/scenescape/SceneScape/media
@@ -95,7 +84,7 @@ spec:
         - name: CONTROLLER_AUTH
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-scene-secrets
+              name: {{ .Release.Name }}-mqtt-auth-secrets
               key: controller.auth
       volumes:
       - name: pgserver-media
@@ -105,8 +94,17 @@ spec:
         configMap:
           name: {{ .Release.Name }}-scene-config
       - name: secrets
-        secret:
-          secretName: {{ .Release.Name }}-scene-secrets
+        projected:
+          sources:
+          - secret:
+              name: {{ .Release.Name }}-django-secrets
+          - secret:
+              name: {{ .Release.Name }}-mqtt-auth-secrets
+          - secret:
+              name: {{ .Release.Name }}-ca-secret
+              items:
+              - key: tls.crt
+                path: scenescape-ca.pem
       - name: scene-secrets-data
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-scene-secrets-pvc
