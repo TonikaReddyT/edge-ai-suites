@@ -208,8 +208,6 @@ services:
       MINIO_ACCESS_KEY: ${MR_MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MR_MINIO_SECRET_KEY}
       ENABLE_HTTPS_MODE: ${ENABLE_HTTPS_MODE}
-      # MINIO_BROWSER: on
-      # MINIO_DOMAIN: localhost
       MINIO_BROWSER_REDIRECT_URL: https://${HOST_IP}/minio/
     command: server --address ":8000" --certs-dir /certs /data
 
