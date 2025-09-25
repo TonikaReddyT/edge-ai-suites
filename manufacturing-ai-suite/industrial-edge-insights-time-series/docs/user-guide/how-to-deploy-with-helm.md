@@ -23,11 +23,11 @@ You can either generate or download the Helm charts.
 
     1. Download Helm chart with the following command:
 
-        `helm pull oci://registry-1.docker.io/intel/wind-turbine-anomaly-detection-sample-app --version 1.0.0`
+        `helm pull oci://registry-1.docker.io/intel/wind-turbine-anomaly-detection-sample-app --version 1.1.0-weekly`
 
     2. unzip the package using the following command:
 
-        `tar -xvzf wind-turbine-anomaly-detection-sample-app-1.0.0.tgz`
+        `tar -xvzf wind-turbine-anomaly-detection-sample-app-1.1.0-weekly.tgz`
 
     - Get into the Helm directory:
 
@@ -77,6 +77,17 @@ To install Helm charts, use one of the following options:
     ```bash
     helm install ts-wind-turbine-anomaly --set env.TELEGRAF_INPUT_PLUGIN=mqtt_consumer . -n ts-sample-app --create-namespace
     ```
+
+> **Note:**
+> To deploy with GPU support for inferencing, use the following command:
+> ```bash
+> helm install ts-wind-turbine-anomaly \
+>   --set privileged_access_required=true \
+>   --set env.TELEGRAF_INPUT_PLUGIN=<input_plugin> \
+>   . -n ts-sample-app --create-namespace
+> ```
+> The `privileged_access_required=true` setting enables Time Series Analytics Microservice access to GPU device through `/dev/dri`.
+
 Use the following command to verify if all the application resources got installed w/ their status:
 
 ```bash
@@ -102,24 +113,35 @@ To copy your own or existing model into Time Series Analytics Microservice in or
 
 2. Copy your new UDF package (using the windturbine anomaly detection UDF package as an example) to the `time-series-analytics-microservice` pod:
     ```sh
+    export SAMPLE_APP="wind-turbine-anomaly-detection"
     cd edge-ai-suites/manufacturing-ai-suite/industrial-edge-insights-time-series/apps/wind-turbine-anomaly-detection # path relative to git clone folder
     cd time-series-analytics-config
-    mkdir windturbine_anomaly_detector
-    cp -r models tick_scripts udfs windturbine_anomaly_detector/.
+    mkdir -p $SAMPLE_APP
+    cp -r models tick_scripts udfs $SAMPLE_APP/.
 
     POD_NAME=$(kubectl get pods -n ts-sample-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep deployment-time-series-analytics-microservice | head -n 1)
 
-    kubectl cp windturbine_anomaly_detector $POD_NAME:/tmp/ -n ts-sample-app
+    kubectl cp $SAMPLE_APP $POD_NAME:/tmp/ -n ts-sample-app
     ```
    > **Note:**  
    > Run the commands only after performing the Helm install.
 
 ## Step 5: Activate the New UDF Deployment Package
 
+> **NOTE**: To activate the UDF inferencing on GPU, additionally run the following command as a prerequisite before activating the UDF deployment package:
+> ```sh
+> curl -k -X 'POST' \
+> 'https://<HOST_IP>:30001/ts-api/config' \
+> -H 'accept: application/json' \
+> -H 'Content-Type: application/json' \
+> -d '<Add contents of edge-ai-suites/manufacturing-ai-suite/industrial-edge-insights-time-series/apps/wind-turbine-anomaly-detection/time-series-analytics-config/config.json with device
+>     value updated to gpu from cpu>'
+> ```
+
 Run the following command to activate the UDF deployment package:
 ```sh
-curl -X 'GET' \
-  'http://<HOST_IP>:30002/config?restart=true' \
+curl -k -X 'GET' \
+  'https://<HOST_IP>:30001/ts-api/config?restart=true' \
   -H 'accept: application/json'
 ```
 
