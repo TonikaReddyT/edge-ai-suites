@@ -63,29 +63,6 @@ class utils:
         
         return chrome_options
 
-
-    def _wait_for_service(self, url, service_name):
-        """Wait for a service to become available with retries"""
-        for attempt in range(self.max_retries):
-            try:
-                urllib.request.urlopen(url, timeout=5)
-                logging.info(f"{service_name} service is ready after {attempt + 1} attempts")
-                return True
-            except Exception as e:
-                if attempt < self.max_retries - 1:
-                    logging.info(f"Attempt {attempt + 1}: {service_name} not ready, waiting {self.retry_delay} seconds...")
-                    time.sleep(self.retry_delay)
-                else:
-                    raise Exception(f"{service_name} service not accessible after {self.max_retries} attempts: {e}")
-        return False
-    
-
-    def _verify_no_404(self, driver, service_name):
-        """Common 404 verification for all URL checks"""
-        assert "404" not in driver.title.lower(), f"{service_name} shows 404 error in title"
-        assert "404" not in driver.page_source.lower(), f"{service_name} page contains 404 error"
-
-
     def _execute_command(self, command, description="command", raise_on_error=True):
         """Execute shell command with proper error handling"""
         try:
