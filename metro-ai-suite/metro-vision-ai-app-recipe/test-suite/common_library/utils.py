@@ -255,13 +255,25 @@ class utils:
                     logging.info(f"Status: {line}")
                     # Extract FPS data efficiently
                     if "pipelines fps:" in line:
-                        match = re.search(r'pipelines fps:\s*\(\s*((?:\d+\.?\d*\s*)+)\)', line)
-                        if match:
-                            fps_values = [float(x) for x in match.group(1).split() if x]
-                            if fps_values:
-                                fps_reports.append(fps_values)
-                                avg_fps = sum(fps_values) / len(fps_values)
-                                logging.info(f"FPS: {fps_values} (avg: {avg_fps:.2f})")
+                        try:
+                            start_idx = line.find('pipelines fps:')
+                            open_idx = line.find('(', start_idx)
+                            close_idx = line.find(')', open_idx)
+                            if open_idx != -1 and close_idx != -1 and close_idx > open_idx:
+                                inside = line[open_idx+1:close_idx].strip()
+                                parts = [p for p in inside.split() if p]
+                                fps_values = []
+                                for p in parts:
+                                    try:
+                                        fps_values.append(float(p))
+                                    except:
+                                        continue
+                                if fps_values:
+                                    fps_reports.append(fps_values)
+                                    avg_fps = sum(fps_values) / len(fps_values)
+                                    logging.info(f"FPS: {fps_values} (avg: {avg_fps:.2f})")
+                        except Exception as e:
+                            logging.warning(f"Failed to parse FPS line: {e}")
                     # Early exit if we have enough FPS data
                     if len(fps_reports) >= 2:
                         logging.info("Sufficient FPS data collected, terminating early")
