@@ -118,7 +118,7 @@ config:
   nginx:
     name: nginx
     int:
-      https_port: "443"
+      https_port: "15443"
       mqtt_port: "1883"
     ext:
       https_port: "30001"
