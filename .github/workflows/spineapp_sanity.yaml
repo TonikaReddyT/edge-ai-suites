@@ -57,6 +57,7 @@ jobs:
       run: | 
        sudo apt-get update
        sudo pip install robotframework
+       lspci | grep -i vga
        sudo apt install -y python3-nose libxml2-utils vlc
        cd edge-ai-suites-repo/manufacturing-ai-suite/industrial-edge-insights-vision/tests/robot_files
        robot test.robot || true  &
