@@ -8,11 +8,11 @@ For prerequisites and system requirements, see [prerequisites.md](./prerequisite
 
 In this section, we describe how to run Metro AI Suite Sensor Fusion for Traffic Management application.
 
-Metro AI Suite Sensor Fusion for Traffic Management application can support different pipeline using topology JSON files to describe the pipeline topology. The defined pipeline topology can be found at [section 4.1 Resources Summary](#41-resources-summary)
+Metro AI Suite Sensor Fusion for Traffic Management application can support different pipeline using topology JSON files to describe the pipeline topology. The defined pipeline topology can be found at [Resources Summary](#resources-summary)
 
 There are two steps required for running the sensor fusion application:
-- Start AI Inference service, more details can be found at [section 4.2 Start Service](#42-start-service)
-- Run the application entry program, more details can be found at [section 4.3 Run Entry Program](#43-run-entry-program)
+- Start AI Inference service, more details can be found at [Start Service](#start-service)
+- Run the application entry program, more details can be found at [Run Entry Program](#run-entry-program)
 
 Besides, you can test each component (without display) following the guides at [Advanced-User-Guide.md](./Advanced-User-Guide.md#532-1c+1r-unit-tests)
 
