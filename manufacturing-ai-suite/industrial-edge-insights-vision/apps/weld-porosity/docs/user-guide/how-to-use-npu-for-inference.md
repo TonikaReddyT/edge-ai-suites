@@ -53,7 +53,7 @@ curl http://<HOST_IP>:8080/pipelines/user_defined_pipelines/weld_porosity_classi
         }
     },
     "parameters": {
-        "detection-properties": {
+        "classification-properties": {
             "model": "/home/pipeline-server/resources/models/weld-porosity/deployment/Classification/model/model.xml"
         }
     }
