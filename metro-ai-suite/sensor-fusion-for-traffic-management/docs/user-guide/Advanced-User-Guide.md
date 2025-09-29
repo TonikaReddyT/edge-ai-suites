@@ -38,13 +38,13 @@ For prerequisites and system requirements, see [prerequisites.md](./prerequisite
 
 In this section, we describe how to run Intel® Metro AI Suite Sensor Fusion for Traffic Management application.
 
-Intel® Metro AI Suite Sensor Fusion for Traffic Management application can support different pipeline using topology JSON files to describe the pipeline topology. The defined pipeline topology can be found at [sec 4.1 Resources Summary](#41-resources-summary)
+Intel® Metro AI Suite Sensor Fusion for Traffic Management application can support different pipeline using topology JSON files to describe the pipeline topology. The defined pipeline topology can be found at [Resources Summary](#resources-summary)
 
 There are two steps required for running the sensor fusion application:
-- Start AI Inference service, more details can be found at [sec 4.2 Start Service](#42-start-service)
-- Run the application entry program, more details can be found at [sec 4.3 Run Entry Program](#43-run-entry-program)
+- Start AI Inference service, more details can be found at [Start Service](#start-service)
+- Run the application entry program, more details can be found at [Run Entry Program](#run-entry-program)
 
-Besides, you can test each component (without display) following the guides at [sec 4.3.2 1C1R Unit Tests](#432-1c+1r-unit-tests), [sec 4.3.4 4C4R Unit Tests](#434-4c+4r-unit-tests), [sec 4.3.6 2C1R Unit Tests](#436-2c+1r-unit-tests), [sec 4.3.8 16C4R Unit Tests](#438-16c+4r-unit-tests)
+Besides, you can test each component (without display) following the guides at [1C1R Unit Tests](#1c+1r-unit-tests), [4C4R Unit Tests](#434-4c+4r-unit-tests), [2C1R Unit Tests](#2c+1r-unit-tests), [16C4R Unit Tests](#16c+4r-unit-tests)
 
 
 ### Resources 
@@ -983,3 +983,4 @@ Some of the code is referenced from the following projects:
 - [IGT GPU Tools](https://gitlab.freedesktop.org/drm/igt-gpu-tools) (MIT License)
 - [Intel DL Streamer](https://github.com/dlstreamer/dlstreamer) (MIT License)
 - [Open Model Zoo](https://github.com/openvinotoolkit/open_model_zoo) (Apache-2.0 License)
+
