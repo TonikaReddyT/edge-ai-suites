@@ -35,7 +35,7 @@ To deploy the **PCB Anomaly Detection** Sample Application with the Edge Orchest
 
 1. Once the deployment package has been imported into the Edge Orchestrator, you can see it in the list of Web UI as shown here.
 
-**![PCB Image](./images/pdd-dp.png)**
+**![PCB Image](./images/pcb-dp.png)**
 
 See [Deployment Packages](<https://docs.openedgeplatform.intel.com/edge-manage-docs/main/user_guide/package_software/deploy_packages.html#view-deployment-packages>) for more information on deployment packages.
 

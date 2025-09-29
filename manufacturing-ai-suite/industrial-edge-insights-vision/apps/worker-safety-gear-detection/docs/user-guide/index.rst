@@ -84,6 +84,7 @@ This sample application offers the following features:
    troubleshooting-guide
    how-to-change-input-video-source
    how-to-deploy-using-helm-charts
+   how-to-deploy-with-edge-orchestrator
    how-to-enable-mlops
    how-to-manage-pipelines
    how-to-run-multiple-ai-pipelines
