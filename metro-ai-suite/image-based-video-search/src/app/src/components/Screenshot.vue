@@ -1,14 +1,15 @@
 <template>
     <div ref="videoFrame" class="video-frame">
-      <iframe
-        ref="iframe"
-        class="responsive-iframe"
-        src="/stream/"
-        title="Local Stream"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      ></iframe>
+      <video
+        ref="video"
+        class="responsive-video"
+        controls
+        autoplay
+        playsinline
+        style="width: 100%; height: 100%; background: black;"
+      >
+        Your browser does not support the video tag.
+      </video>
     </div>
     <div class="btn-group" style="width: 100%">
       <button @click="startAnalysis" v-if="pipeline == null" :style="{ width: screenshot ? '20%' : '25%' }">Analyze Stream</button>
@@ -58,11 +59,16 @@
 </template>
 
 <script type="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import axios from "axios";
 import html2canvas from "html2canvas";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
+// Dynamically import hls.js for HLS playback in browsers that do not support it natively
+let Hls;
+if (typeof window !== 'undefined') {
+  import('hls.js').then((mod) => { Hls = mod.default; });
+}
 
 export default defineComponent({
   name: 'Screenshot',
@@ -104,26 +110,35 @@ export default defineComponent({
     }
   },
   async mounted() {
+    // HLS video setup
+    const video = this.$refs.video;
+    if (video) {
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = '/hls/stream/index.m3u8';
+      } else if (window.Hls) {
+        const hls = new window.Hls();
+        hls.loadSource('/hls/stream/stream.m3u8');
+        hls.attachMedia(video);
+      }
+    }
+    // Existing pipeline status logic
     try {
       const res = await fetch("/pipelines/status",{
           method: "GET"
       });
       const pipelines = await res.json();
-
-      // look for pipeline with name "filter-pipeline" which is "RUNNING". (Ignore "search_image" pipeline)
-      // If found, then analyse pipeline is running in background. Set this.pipeline variable to running pipeline id
       if (Array.isArray(pipelines)) {
         for (const p of pipelines) {
           if (p.state === "RUNNING") {
             try {
-              const detailsRes = await fetch(`/pipelines/${p.id}`,{
+              const detailsRes = await fetch(`/pipelines/${p.id}` ,{
                   method: "GET"
               });
               const details = await detailsRes.json();
               const name = details?.params?.version;
               if (name === "filter-pipeline") {
                 this.pipeline = p.id;
-                break; // found our pipeline, stop looking
+                break;
               }
             } catch (err) {
               console.error(`Error fetching details for pipeline ${p.id}:`, err);
@@ -138,26 +153,14 @@ export default defineComponent({
   },
   methods: {
     async captureScreenshot() {
-      if (!this.video) {
-        console.log("Get video from iframe")
-        const iframe = this.$refs.iframe;
-        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        const video = iframeDocument.querySelector('video');
-
-        if (video) {
-          this.video = video;
-        } else {
-          console.error('Video element not found in iframe.');
-        }
-      }
-
-      if (this.video) {
+      const video = this.$refs.video;
+      if (video) {
         try {
           const canvas = document.createElement('canvas');
-          canvas.width = this.video.videoWidth;
-          canvas.height = this.video.videoHeight;
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
           const context = canvas.getContext('2d');
-          context.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
           this.screenshot = canvas.toDataURL('image/png');
           this.imageData = [];
         } catch (error) {
@@ -317,11 +320,11 @@ body, html {
   justify-content: flex-start; /* Align items to the top */
 }
 
-.responsive-iframe {
-  width: 100%; /* Set the width */
-  height: 100%; /* Set the height */
-  border: none; /* Remove the border */
-  display: block; /* Ensure the iframe is displayed as a block element */
+.responsive-video {
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: block;
 }
 
 .screenshot-preview {

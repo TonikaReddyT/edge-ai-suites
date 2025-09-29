@@ -1,32 +1,43 @@
-FROM docker.io/library/node:24
+# ----------------------
+# Stage 1: Build Vue app
+# ----------------------
+FROM node:24 as build
 
-USER root
-
-# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy only app dependencies first (for caching)
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
+# Copy the rest of the app source
 COPY . .
 
-# Build the Vue.js application
-# RUN npm run build
+# Build Vue app for production
+RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 3000
 
-# Add non root user
-ARG USER=intelmicroserviceuser
-ARG UID=1999
-RUN useradd -ms /bin/bash ${USER} -o -u $UID && \
-    chown ${USER}:${USER} -R /usr/src/app /root
-RUN mkdir -p /home/${USER}/ && chown -R ${USER}:${USER} /home/${USER}
-USER ${USER}
+# ------------------------
+# Stage 2: Nginx container
+# ------------------------
+FROM nginx:alpine
 
-# Start the application
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
+# Install openssl to generate certs
+RUN apk add --no-cache openssl
+
+# Create SSL directory (for certs at runtime)
+RUN mkdir -p /etc/nginx/ssl
+
+# Copy custom nginx.conf (path relative to build context `src/`)
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy built Vue app from previous stage
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose standard HTTP + HTTPS
+EXPOSE 80 443
+
+ENTRYPOINT ["/entrypoint.sh"]
