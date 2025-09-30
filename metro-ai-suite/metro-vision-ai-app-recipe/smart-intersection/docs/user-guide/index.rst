@@ -17,6 +17,7 @@ This guide is designed to help developers understand the architecture, setup, an
    :caption: How to
 
    how-to-deploy-helm
+   how-to-deploy-with-edge-orchestrator
 
 .. toctree::
    :caption: Support and Community
