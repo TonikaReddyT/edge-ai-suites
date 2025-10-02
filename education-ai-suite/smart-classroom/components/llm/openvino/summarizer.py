@@ -5,6 +5,7 @@ import logging, threading
 from utils import ensure_model
 from utils.config_loader import config
 from utils.ov_genai_util import YieldingTextStreamer
+from utils.locks import audio_pipeline_lock
 logger = logging.getLogger(__name__)
 
 class Summarizer(BaseSummarizer):
@@ -35,6 +36,8 @@ class Summarizer(BaseSummarizer):
                     error_msg = "Summary generation failed. Insufficient GPU resources available to run this process."
                 streamer._queue.put(f"[ERROR]: {error_msg}")
             finally:
+                print("release ---->>>>>>")
+                audio_pipeline_lock.release()
                 streamer.end()
 
         threading.Thread(target=run_generation, daemon=True).start()
