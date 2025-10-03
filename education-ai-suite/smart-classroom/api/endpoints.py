@@ -82,7 +82,6 @@ async def summarize_audio(request: SummaryRequest):
     if audio_pipeline_lock.locked():
         raise HTTPException(status_code=429, detail="Session Active, Try Later")
     
-    await audio_pipeline_lock.acquire()
     pipeline = Pipeline(request.session_id)
     
     async def event_stream():

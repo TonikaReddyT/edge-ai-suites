@@ -108,6 +108,7 @@ class Summarizer(BaseSummarizer):
 
                 def run_generation():
                     try:
+                        audio_pipeline_lock.acquire()
                         gen_kwargs = dict(
                             input_ids=model_inputs.input_ids,
                             max_new_tokens=max_new_tokens,
@@ -120,7 +121,6 @@ class Summarizer(BaseSummarizer):
 
                         self.model.generate(**gen_kwargs)
                     finally:
-                        print("release ---->>>>>>")
                         audio_pipeline_lock.release()
                         streamer.end()
 

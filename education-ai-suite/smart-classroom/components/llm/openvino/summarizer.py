@@ -22,6 +22,7 @@ class Summarizer(BaseSummarizer):
 
         def run_generation():
             try:
+                audio_pipeline_lock.acquire()
                 self.model.generate(
                     prompt,
                     streamer=streamer,
@@ -36,7 +37,6 @@ class Summarizer(BaseSummarizer):
                     error_msg = "Summary generation failed. Insufficient GPU resources available to run this process."
                 streamer._queue.put(f"[ERROR]: {error_msg}")
             finally:
-                print("release ---->>>>>>")
                 audio_pipeline_lock.release()
                 streamer.end()
 

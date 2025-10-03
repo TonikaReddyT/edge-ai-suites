@@ -1,3 +1,3 @@
-import asyncio
- 
-audio_pipeline_lock = asyncio.Lock()
+import threading 
+
+audio_pipeline_lock = threading.Lock()
